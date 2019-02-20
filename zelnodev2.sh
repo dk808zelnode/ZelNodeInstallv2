@@ -49,7 +49,7 @@ FETCHPARAMS='https://raw.githubusercontent.com/zelcash/zelcash/master/zcutil/fet
 #
 
 #Suppressing password promts for this user so zelnode can operate
-sudo echo -e "$(who -m | awk '{print $1;}') ALL=(ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
+sudo echo -e "$(who -m | awk '{print $1;}') ALL=(ALL) NOPASSWD: /usr/bin/zelcashd" | sudo EDITOR='tee -a' visudo
 clear
 echo -e '\033[1;33m==================================================================\033[0m'
 echo -e 'ZelNode Setup, v2.1'
