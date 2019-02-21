@@ -34,6 +34,7 @@ RPCPORT=16124
 PORT=16125
 COIN_DAEMON='zelcashd'
 COIN_CLI='zelcash-cli'
+COIN_TX='zelcash-tx'
 COIN_PATH='/usr/bin'
 USERNAME=$(who -m | awk '{print $1;}')
 YELLOW='\033[1;33m'
@@ -146,34 +147,25 @@ cd /usr/bin && sudo rm $COIN_CLI $COIN_DAEMON > /dev/null 2>&1 && sleep 2
 cd /usr/local/bin && sudo rm $COIN_CLI $COIN_DAEMON > /dev/null 2>&1 && sleep 2
 cd
 wget -c $WALLET_DOWNLOAD -O - | sudo tar -xz
-sudo cp zelcashd /usr/bin
-sudo cp zelcash-cli /usr/bin
-sudo chmod u+x /usr/bin/zelcash*
-sudo rm -rf $WALLET_TAR_FILE && sudo rm -rf ~/zelcashd && sudo rm -rf ~/zelcash-cli
+sudo mv $COIN_DAEMON $COIN_CLI $COIN_TX /usr/bin
+sudo chmod 555 /usr/bin/zelcash*
+sudo rm -rf $WALLET_TAR_FILE && sudo rm -rf ~/zelcash-gtest && sudo rm -rf ~/fetch-params.sh
 cd
-    echo -e "\033[1;32mDownloading wallet bootstrap file...\033[0m"
-    echo -e
-    mkdir ~/zeltemp
 
-    wget -c $WALLET_BOOTSTRAP -O ~/zeltemp/$BOOTSTRAP_ZIP_FILE
-    echo -e "\033[1;32mExtracting bootstrap files, this will take some time...\033[0m"
-    sleep 3
-    unzip -n ~/zeltemp/$BOOTSTRAP_ZIP_FILE -d ~/zeltemp
-	unzip -n ~/zeltemp/$BOOTSTRAP_ZIP_FILE -d ~/zeltemp
-	cp -r ~/zeltemp/chainstate ~/.zelcash/
-	cp -r ~/zeltemp/blocks ~/.zelcash/  
-	rm ~/zeltemp -R
-    echo ""
-    echo -e "\033[1;33mDone downloading wallet bootstrap file.\033[0m"
+echo -e "\033[1;32mDownloading bootstrap for quick syncing please be patient...\033[0m"
+wget -U Mozilla/5.0 $$WALLET_BOOTSTRAP &> /dev/null
+unzip $BOOTSTRAP_ZIP_FILE -d /home/$USERNAME/.zelcash &> /dev/null
+rm -rf $BOOTSTRAP_ZIP_FILE
 #end download/extract bootstrap file
 
 cd
 echo ""
 echo -e "\033[1;32mDownloading chain params...\033[0m"
-sleep 2
-wget $FETCHPARAMS
-chmod u+x fetch-params.sh
-bash fetch-params.sh
+wget -q $FETCHPARAMS &> /dev/null
+chmod 770 fetch-params.sh &> /dev/null
+sudo bash fetch-params.sh &> /dev/null
+sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
+rm fetch-params.sh
 echo -e "\033[1;33mDone fetching chain params\033[0m"
 
 echo -e "\033[1;32mCreating system service file....\033[0m"
@@ -227,7 +219,8 @@ sudo systemctl start fail2ban >/dev/null 2>&1
 echo -e "\033[1;33mBasic security completed...\033[0m"
 
 echo -e "\033[1;32mRestarting $COIN_NAME wallet with new configs, 30 seconds...\033[0m"
-$COIN_DAEMON -daemon
+sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
+sudo systemctl start $COIN_NAME.service >/dev/null &> /dev/null
 for (( counter=30; counter>0; counter-- ))
 do
 echo -n ". "
@@ -238,18 +231,19 @@ printf "\n"
 echo -e "\033[1;32mGetting info...\033[0m"
 $COIN_CLI getinfo
 
-echo -e "\033[1;32mStarting your zelnode with final details\033[0m"
+echo -e "\033[1;32mStarting your ZelNode with final details\033[0m"
 
 sleep 10
 
 printf "\033[1;34m"
-figlet -t -k "WELCOME   TO   zelnodes" 
+figlet -t -k "WELCOME   TO   ZELNODES" 
 printf "\e[0m"
 
-echo -e "\033[1;33m========================================================================================"
-echo -e "\033[1;32mPLEASE COMPLETE THE ZELNODE SETUP IN YOUR ZELCORE WALLET\033[0m"
-echo -e "COURTESY OF \033[1;32mALTTANK FAM\033[0m, \033[1;32mDK808 \033[0m, \033[1;32mGOOSE-TECH \033[0m & \033[1;32mSkyslayer"
-echo -e "\033[1;33m========================================================================================\033[0m"
+echo -e "\033[1;33m============================================================================================================="
+echo -e "\033[1;32mPLEASE COMPLETE THE ZELNODE SETUP IN YOUR ZELCORE/ZELMATE WALLET\033[0m"
+echo -e "COURTESY OF \033[1;32mALTTANK FAM\033[0m, \033[1;32mDK808\033[0m, \033[1;32mGOOSE-TECH\033[0m,"
+echo -e "\033[1;32mSKYSLAYER\033[0m, & \033[1;32mPACKETFLOW"
+echo -e "\033[1;33m=============================================================================================================\033[0m"
 echo -e
 read -n1 -r -p "Press any key to continue..." key
 for (( countera=15; countera>0; countera-- ))
