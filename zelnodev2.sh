@@ -87,16 +87,21 @@ echo -e "\033[1;33m=======================================================\033[0
 echo "INSTALLING ZELNODE DEPENDENCIES"
 echo -e "\033[1;33m=======================================================\033[0m"
 echo "Installing packages and updates..."
-sudo apt-get update -y
-sudo apt-get install software-properties-common -y
-sudo apt-get update -y
-sudo apt-get upgrade -y
-sudo apt-get install nano htop pwgen ufw figlet -y
-sudo apt-get install build-essential libtool pkg-config -y
-sudo apt-get install libc6-dev m4 g++-multilib -y
-sudo apt-get install autoconf ncurses-dev unzip git python python-zmq -y
-sudo apt-get install wget curl bsdmainutils automake -y
-sudo apt-get remove sysbench -y
+sudo apt-get update -y &> /dev/null
+sudo apt-get install software-properties-common -y &> /dev/null
+sudo apt-get update -y &> /dev/null
+sudo apt-get upgrade -y &> /dev/null
+sudo apt-get install nano htop pwgen ufw figlet -y &> /dev/null
+echo "....."
+sudo apt-get install build-essential libtool pkg-config -y &> /dev/null
+echo "...."
+sudo apt-get install libc6-dev m4 g++-multilib -y &> /dev/null
+echo "..."
+sudo apt-get install autoconf ncurses-dev unzip git python python-zmq -y &> /dev/null
+echo ".."
+sudo apt-get install wget curl bsdmainutils automake -y &> /dev/null
+echo "."
+sudo apt-get remove sysbench -y &> /dev/null
 echo -e "\033[1;33mPackages complete...\033[0m"
 echo -e
 
